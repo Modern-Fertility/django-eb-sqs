@@ -58,22 +58,38 @@ class SqsQueueClient(QueueClient):
         else:
             raise QueueDoesNotExistException(queue_name)
 
-    def add_message(self, queue_name, msg, delay):
+    def add_message(self, queue_name, group_id, msg, delay):
         # type: (unicode, unicode, int) -> None
         try:
             queue = self._get_queue(queue_name)
+            
+            # different params for fifo vs non-fifo
+            is_fifo = queue_name.endswith('.fifo')
+
             try:
-                queue.send_message(
-                    MessageBody=msg,
-                    DelaySeconds=delay
-                )
-            except ClientError as ex:
-                if ex.response.get('Error', {}).get('Code', None) == 'AWS.SimpleQueueService.NonExistentQueue':
-                    queue = self._get_queue(queue_name, use_cache=False)
+                if is_fifo:
+                    queue.send_message(
+                        MessageBody=msg,
+                        MessageGroupId=group_id
+                    )
+                else:
                     queue.send_message(
                         MessageBody=msg,
                         DelaySeconds=delay
                     )
+            except ClientError as ex:
+                if ex.response.get('Error', {}).get('Code', None) == 'AWS.SimpleQueueService.NonExistentQueue':
+                    queue = self._get_queue(queue_name, use_cache=False)
+                    if is_fifo:
+                        queue.send_message(
+                            MessageBody=msg,
+                            MessageGroupId=group_id
+                        )
+                    else:
+                        queue.send_message(
+                            MessageBody=msg,
+                            DelaySeconds=delay
+                        )
                 else:
                     raise ex
         except QueueDoesNotExistException:
