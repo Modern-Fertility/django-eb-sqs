@@ -14,7 +14,7 @@ except Exception:
 
 
 class WorkerTask(object):
-    def __init__(self, id, group_id, queue, func, args, kwargs, max_retries, retry, retry_id, use_pickle):
+    def __init__(self, id, group_id, queue, fifo_group, func, args, kwargs, max_retries, retry, retry_id, use_pickle):
         # type: (str, unicode, unicode, Any, tuple, dict, int, int, unicode, bool) -> None
         super(WorkerTask, self).__init__()
         self.id = id
@@ -27,6 +27,7 @@ class WorkerTask(object):
         self.retry = retry
         self.retry_id = retry_id
         self.use_pickle = use_pickle
+        self.fifo_group = fifo_group
 
         self.abs_func_name = '{}.{}'.format(self.func.__module__, self.func.__name__)
 
@@ -66,6 +67,7 @@ class WorkerTask(object):
                 self.id,
                 self.group_id,
                 self.queue,
+                self.fifo_group,
                 self.func,
                 self.args,
                 self.kwargs,
@@ -97,6 +99,7 @@ class WorkerTask(object):
 
         use_pickle = task.get('pickle', False)
         queue = task.get('queue', settings.DEFAULT_QUEUE)
+        fifo_group = task.get('fifo_group', None)
 
         task_args = task.get('args', [])
         args = WorkerTask._unpickle_args(task_args) if use_pickle else task_args
@@ -107,7 +110,7 @@ class WorkerTask(object):
         retry = task.get('retry', 0)
         retry_id = task.get('retryId')
 
-        return WorkerTask(id, group_id, queue, func, args, kwargs, max_retries, retry, retry_id, use_pickle)
+        return WorkerTask(id, group_id, queue, fifo_group, func, args, kwargs, max_retries, retry, retry_id, use_pickle)
 
     @staticmethod
     def _unpickle_args(args):

@@ -58,7 +58,7 @@ class SqsQueueClient(QueueClient):
         else:
             raise QueueDoesNotExistException(queue_name)
 
-    def add_message(self, queue_name, group_id, msg, delay):
+    def add_message(self, queue_name, fifo_group, msg, delay):
         # type: (unicode, unicode, int) -> None
         try:
             queue = self._get_queue(queue_name)
@@ -66,7 +66,7 @@ class SqsQueueClient(QueueClient):
             if is_fifo:
                 queue.send_message(
                     MessageBody=msg,
-                    MessageGroupId=group_id
+                    MessageGroupId=fifo_group
                 )
             else:
                 queue.send_message(

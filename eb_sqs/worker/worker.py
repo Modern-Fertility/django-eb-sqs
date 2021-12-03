@@ -80,9 +80,9 @@ class Worker(object):
 
             raise ExecutionFailedException(worker_task.abs_func_name, ex)
 
-    def delay(self, group_id, queue_name, func, args, kwargs, max_retries, use_pickle, delay, execute_inline):
+    def delay(self, group_id, queue_name, fifo_group, func, args, kwargs, max_retries, use_pickle, delay, execute_inline):
         # type: (unicode, unicode, Any, tuple, dict, int, bool, int, bool) -> Any
-        worker_task = WorkerTask(str(uuid.uuid4()), group_id, queue_name, func, args, kwargs, max_retries, 0, None, use_pickle)
+        worker_task = WorkerTask(str(uuid.uuid4()), group_id, queue_name, fifo_group, func, args, kwargs, max_retries, 0, None, use_pickle)
         return self._enqueue_task(worker_task, delay, execute_inline, False, True)
 
     def retry(self, worker_task, delay, execute_inline, count_retries):
@@ -114,7 +114,7 @@ class Worker(object):
             if execute_inline:
                 return self._execute_task(worker_task)
             else:
-                self.queue_client.add_message(worker_task.queue, worker_task.group_id, worker_task.serialize(), delay)
+                self.queue_client.add_message(worker_task.queue, worker_task.fifo_group, worker_task.serialize(), delay)
                 return None
         except QueueDoesNotExistException as ex:
             self._remove_from_group(worker_task)
