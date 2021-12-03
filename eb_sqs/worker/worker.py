@@ -114,7 +114,7 @@ class Worker(object):
             if execute_inline:
                 return self._execute_task(worker_task)
             else:
-                self.queue_client.add_message(worker_task.queue, worker_task.serialize(), delay)
+                self.queue_client.add_message(worker_task.queue, worker_task.group_id, worker_task.serialize(), delay)
                 return None
         except QueueDoesNotExistException as ex:
             self._remove_from_group(worker_task)

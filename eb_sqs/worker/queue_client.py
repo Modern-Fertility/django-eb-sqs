@@ -23,6 +23,6 @@ class QueueClient(object):
         self._group_id = group_id
 
     @abstractmethod
-    def add_message(self, queue_name, msg, delay):
+    def add_message(self, queue_name, group_id, msg, delay):
         # type: (unicode, unicode, int) -> None
         pass
