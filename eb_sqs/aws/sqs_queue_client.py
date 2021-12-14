@@ -4,6 +4,8 @@ import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
 
+import uuid
+
 from eb_sqs import settings
 from eb_sqs.worker.queue_client import QueueClient, QueueDoesNotExistException, QueueClientException
 
@@ -64,9 +66,10 @@ class SqsQueueClient(QueueClient):
             queue = self._get_queue(queue_name)
             is_fifo = queue_name.endswith('.fifo')
             if is_fifo:
+                message_group_id = fifo_group if fifo_group else uuid.uuid4().hex
                 queue.send_message(
                     MessageBody=msg,
-                    MessageGroupId=fifo_group
+                    MessageGroupId=message_group_id
                 )
             else:
                 queue.send_message(
