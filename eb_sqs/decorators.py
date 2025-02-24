@@ -37,12 +37,9 @@ def func_retry_decorator(worker_task: WorkerTask) -> (tuple, dict):
 
 
 class task(object):
-<<<<<<< HEAD
-    def __init__(self, queue_name=None, group_id=None, max_retries=None, use_pickle=None):
-        # type: (str, int, bool) -> None
-=======
-    def __init__(self, queue_name: str = None, max_retries: int = None, use_pickle: bool = None):
->>>>>>> d78493e31dc1c781ee6047762bee9f91da89c8c5
+
+    def __init__(self, queue_name: str = None, group_id: str = None, max_retries: int = None, use_pickle: bool = None) -> None:
+
         self.queue_name = queue_name
         self.max_retries = max_retries
         self.use_pickle = use_pickle
