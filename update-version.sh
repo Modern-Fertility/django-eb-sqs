@@ -23,7 +23,7 @@ function usage()
 function update()
 {
   # update codebase
-  git checkout master
+  git checkout cuda-networks-master
   git pull
 
   if [ "$VERSION_PARAM" = "AUTO" ]
@@ -49,7 +49,7 @@ function update()
   TAG="v$NEW_VER"
   log "New tag : $TAG"
   git tag -a "$TAG" -m "Bumped the version to $NEW_VER"
-  git push origin "$TAG"
+  git push "$TAG"
 
   exit
 }
