@@ -49,7 +49,7 @@ function update()
   TAG="v$NEW_VER"
   log "New tag : $TAG"
   git tag -a "$TAG" -m "Bumped the version to $NEW_VER"
-  git push "$TAG"
+  git push origin "$TAG"
 
   exit
 }
