@@ -23,8 +23,8 @@ function usage()
 function update()
 {
   # update codebase
-  git checkout master
-  git pull
+  # git checkout master
+  # git pull
 
   if [ "$VERSION_PARAM" = "AUTO" ]
   then
