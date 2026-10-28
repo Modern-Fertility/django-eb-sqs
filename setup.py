@@ -6,7 +6,7 @@ README = open(os.path.join(here, 'README.md')).read()
 
 setup(
     name='django-eb-sqs',
-    version='1.34',
+    version='1.35',
     package_dir={'eb_sqs': 'eb_sqs'},
     include_package_data=True,
     packages=find_packages(),
@@ -15,6 +15,7 @@ setup(
     url='https://github.com/cuda-networks/django-eb-sqs',
     install_requires=[
         'boto3>=1.9.86',
+        'certifi>=2026.10.23',
         'Django>=1.10.6',
         'redis>=2.10.5',
         'requests>=2.10.0',
